@@ -5,6 +5,7 @@
 
 int		champ;
 int		prec;
+int		isprec;
 
 void	write_spaces(int	length)
 {
@@ -39,11 +40,11 @@ void	hexaconverter(unsigned int n)
 	}
 	while (n != 0)
 	{
-		d = n%16;
+		d = n % 16;
 		if (d < 10)
 			array[i++] = d + '0';
 		else
-			array[i++] = d + 55 + 32;
+			array[i++] = d + 32 + 55;
 		n/=16;
 	}
 	cp = i;
@@ -127,10 +128,17 @@ void	actions(va_list parameter, char t)
 	if (t == 's')
 	{
 		str = va_arg(parameter, char *);
-		if (prec > 0 && ft_strlen(str) > prec)
+		if (str == NULL)
+		{
+			char	str1[7] = "(null)";
+			str = str1;
+		}
+		if (prec >= 0 && ft_strlen(str) > prec)
 			write_spaces(prec);
 		else
 			write_spaces(ft_strlen(str));
+		if (prec == 0 && isprec == 1)
+			return ;
 		ft_putstr(str, prec);
 	}
 	else if (t == 'd')
@@ -147,6 +155,7 @@ int		champ_and_prec(const char *types, int i)
 {
 	champ = 0;
 	prec = 0;
+	isprec = 0;
 	int	cp;
 
 	if (types[i] == '-')
@@ -166,6 +175,7 @@ int		champ_and_prec(const char *types, int i)
 		i++;
 	if (i != cp)
 	{
+		isprec = 1;
 		while (cp < i)
 			prec = prec * 10 + (types[cp++] - '0');
 	}
